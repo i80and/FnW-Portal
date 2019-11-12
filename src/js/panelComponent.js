@@ -19,7 +19,7 @@ import fnw_table from './config/endpoints_list.json'
 class App extends Component {
 
     componentDidMount() {
-        
+
         var camera, scene, renderer;
         var controls;
 
@@ -175,7 +175,7 @@ class App extends Component {
     }
     render() {
         return (
-            <div ref={(mount) => { this.mount = mount }}/>
+            <div className='crt' ref={(mount) => { this.mount = mount }}/>
         )
     }
 }
