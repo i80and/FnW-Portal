@@ -17,7 +17,10 @@
     "express": "^4.17.1",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
-    "three": "^0.110.0"
+    "three": "^0.110.0",
+    "three-css3drenderer": "^1.0.1",
+    "three-trackballcontrols": "0.0.8",
+    "three-tween": "^1.0.0"
   },
   "repository": {
     "type": "git",

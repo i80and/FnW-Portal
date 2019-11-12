@@ -8,7 +8,7 @@ const htmlPlugin = new HtmlWebPackPlugin({
 });
 
 module.exports = {
-    entry: path.join(__dirname, "src", "js", "app.js"),
+    entry: path.join(__dirname, "src", "js", "panelComponent.js"),
     plugins: [htmlPlugin],
     module: {
         rules: [

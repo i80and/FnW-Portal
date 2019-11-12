@@ -38,8 +38,3 @@ a, button, input, select {
 	user-select: none;
 	z-index: 2 !important; /* TODO Solve this in HTML */
 }
-
-div {
-	background-color:#99cc00;
-	padding:10px;
-}
