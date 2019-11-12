@@ -1,7 +1,7 @@
-/*@font-face {*/
-/*  font-family: 'verger-light';*/
-/*  src: url('../fonts/Voyager-Grotesque/Veger(light).ttf')  format('truetype');*/
-/*}*/
+@font-face {
+  font-family: 'verger-light';
+  src: url('fonts/Veger(light).ttf')  format('truetype');
+}
 
 a {
   color: #8ff;
