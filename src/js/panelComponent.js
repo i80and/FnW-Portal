@@ -1,3 +1,5 @@
+// import fs from 'fs';
+
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 
@@ -12,18 +14,12 @@ import '../css/main.css';
 import '../css/crt.css';
 import '../css/panel.css';
 
+import fnw_table from './config/endpoints_list.json'
+
 class App extends Component {
 
     componentDidMount() {
-
-        const fnw_table = [
-            {text: "Widgets", detail: "Graphical Widgets", link: "http://www.fopsfire.net/speed-test/"},
-            {text: "Documentation", detail: "Infrastructure Documentation", link: "http://www.fopsfire.net/docs/infra/"},
-            {text: "Monitoring", detail: "Service Monitoring", link: "http://www.fopsfire.net/monitoring/login"},
-            {text: "Registry", detail: "Private Docker Registry", link: "http://www.fopsfire.net/docker/admin/"},
-            {text: "Github", detail: "Public Programming Projects", link: "https://github.com/SashaNullptr"}
-        ];
-
+        
         var camera, scene, renderer;
         var controls;
 

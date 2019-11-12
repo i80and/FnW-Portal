@@ -9,6 +9,7 @@ const htmlPlugin = new HtmlWebPackPlugin({
 
 module.exports = {
     entry: path.join(__dirname, "src", "js", "panelComponent.js"),
+    target: 'node',
     plugins: [htmlPlugin],
     module: {
         rules: [
@@ -32,11 +33,12 @@ module.exports = {
                         }
                     }
                 ]
-            }
+            },
         ]
     },
+
     resolve: {
-        extensions: ['*', '.js', '.jsx', '.css']
+        extensions: ['*', '.js', '.jsx', '.css', '.ttf', '.json']
     },
     output: {
         path: path.join(__dirname, 'dist'),
@@ -45,5 +47,8 @@ module.exports = {
     },
     devServer: {
         contentBase: './dist'
+    },
+    node: {
+        fs: 'empty'
     }
 };
