@@ -48,7 +48,4 @@ module.exports = {
     devServer: {
         contentBase: './dist'
     },
-    node: {
-        fs: 'empty'
-    }
 };
