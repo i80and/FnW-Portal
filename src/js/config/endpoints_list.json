@@ -2,26 +2,26 @@
     {
         "text": "Widgets",
         "detail": "Graphical Widgets",
-        "link": "http://www.fopsfire.net/speed-test/"
+        "link": "https://www.fopsfire.net/speed-test/"
     },
     {
         "text": "Documentation",
         "detail": "Infrastructure Documentation",
-        "link": "http://www.fopsfire.net/docs/infra/"
+        "link": "https://www.fopsfire.net/docs/infra/"
     },
     {
         "text": "Monitoring",
         "detail": "Service Monitoring",
-        "link": "http://www.fopsfire.net/monitoring/login"
+        "link": "https://www.fopsfire.net/monitoring/login"
     },
     {
         "text": "Registry",
         "detail": "Private Docker Registry",
-        "link": "http://www.fopsfire.net/docker/admin/"
+        "link": "https://www.fopsfire.net/docker/admin/"
     },
     {
         "text": "Github",
         "detail": "Public Programming Projects",
-        "link": "https://github.com/SashaNullptr"
+        "link": "httpss://github.com/SashaNullptr"
     }
 ]
