@@ -121,10 +121,10 @@ const PassThroughShader = {
 const BarrelDistortionShader = {
     uniforms: {
         tDiffuse: { value: null },
-        strength: { value: 0.7 },
+        strength: { value: 0.9 },
         height: { value: 1 },
         aspectRatio: { value: 1 },
-        cylindricalRatio: { value: 0.8 }
+        cylindricalRatio: { value: 0.4 }
     },
     vertexShader: [
         "uniform float strength;",          // s: 0 = perspective, 1 = stereographic
@@ -276,9 +276,6 @@ const CreatTextPanel = (text, details, color, x=0, y=0, z=0) => {
 
     ctx.font = '12px verger-light';
     ctx.fillText(details, w/2, h*3/4);
-
-    // ctx.strokeStyle = '#787878';
-    // ctx.strokeText(text, 0, 20);
 
     const itemTexture = new THREE.Texture(
         bitmap,

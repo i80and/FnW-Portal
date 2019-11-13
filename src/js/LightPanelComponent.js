@@ -37,7 +37,7 @@ class App extends Component {
         function init(component) {
 
             scene = new THREE.Scene();
-            const fov = 110;
+            const fov = 90;
             const aspect = window.innerWidth / window.innerHeight;
             camera = new THREE.PerspectiveCamera( fov, aspect, 1, 10000 );
             camera.position.z = 500;
@@ -88,6 +88,7 @@ class App extends Component {
 
             occlusionComposer = new EffectComposer(renderer, occRenderTarget);
             occlusionComposer.addPass( new RenderPass(scene, camera) );
+            occlusionComposer.addPass(bpPass);
             occlusionComposer.addPass(hBlur);
             occlusionComposer.addPass(vBlur);
             occlusionComposer.addPass(hBlur);
@@ -103,10 +104,10 @@ class App extends Component {
 
             composer = new EffectComposer(renderer);
             composer.addPass(new RenderPass(scene, camera));
+            composer.addPass(bpPass);
             composer.addPass(bloomPass);
             composer.addPass(badTVPass);
             composer.addPass(filmPass);
-            composer.addPass(bpPass);
             composer.addPass(blendPass);
 
             controls = new TrackballControls( camera, renderer.domElement );
