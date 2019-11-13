@@ -16,6 +16,7 @@ import * as PANEL from './panel/LightPanel.js'
 import { time_of_day_color } from './panel/time_of_day_colors';
 
 import '../css/main.css';
+import '../css/crt.css';
 import fnw_table from './config/endpoints_list.json'
 
 class App extends Component {
@@ -36,7 +37,9 @@ class App extends Component {
         function init(component) {
 
             scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
+            const fov = 110;
+            const aspect = window.innerWidth / window.innerHeight;
+            camera = new THREE.PerspectiveCamera( fov, aspect, 1, 10000 );
             camera.position.z = 500;
 
             const width = window.innerWidth;
@@ -76,6 +79,7 @@ class App extends Component {
             const vBlur = PANEL.VBlurPass(height);
             const vlPass = PANEL.VLPass();
             const bloomPass = new UnrealBloomPass(width / height, 0.5, .8, .3);
+            const bpPass = new PANEL.BarrelDistionPass(fov, aspect);
 
             badTVPass = PANEL.BadTVPass();
             filmPass = PANEL.FilmPass();
@@ -102,6 +106,7 @@ class App extends Component {
             composer.addPass(bloomPass);
             composer.addPass(badTVPass);
             composer.addPass(filmPass);
+            composer.addPass(bpPass);
             composer.addPass(blendPass);
 
             controls = new TrackballControls( camera, renderer.domElement );
