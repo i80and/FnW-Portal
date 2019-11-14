@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 const FirstPersonControls = require('three-first-person-controls')(THREE);
-import PointerLockControls from 'three-pointerlock';
 
 import PanelBase from './LightPanelBase'
 

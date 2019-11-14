@@ -8,12 +8,8 @@ import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass';
 import {ShaderPass} from 'three/examples/jsm/postprocessing/ShaderPass';
 import {UnrealBloomPass} from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 
-const TrackballControls = require('three-trackballcontrols');
-const FirstPersonControls = require('three-first-person-controls')(THREE);
-const DeviceOrientationControls = require('../thirdparty/Controls/DeviceOrientationControls');
-
-import * as PANEL from './panel/LightPanel.js'
-import { TimeOfDayColor } from './panel/TimeOfDayColor';
+import * as PANEL from './Effects/LightPanel.js'
+import { TimeOfDayColor } from './Effects/TimeOfDayColor';
 
 import FnWTable from '../config/endpoints_list.json'
 
