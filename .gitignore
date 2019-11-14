@@ -80,3 +80,7 @@ node_modules
 
 # Compiled output
 /dist
+
+# Generated self-signed SSL certs
+*.key
+*.pem
