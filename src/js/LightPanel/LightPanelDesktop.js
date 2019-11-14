@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 const FirstPersonControls = require('three-first-person-controls')(THREE);
+import PointerLockControls from 'three-pointerlock';
 
 import PanelBase from './LightPanelBase'
 
@@ -22,12 +23,10 @@ export default class LightPanelDesktop extends PanelBase {
     controlsSetup = () => {
         this.controls = new THREE.FirstPersonControls(this.camera, this.mount);
         this.controls.enabled = true;
-        this.controls.lookSpeed = 0.1; //Speed of Mouse Moving View
+        this.controls.lookSpeed = 1; //Speed of Mouse Moving View
         this.controls.movementSpeed = 10; //Camera moving speed
         this.controls.noFly = true;
         this.controls.constrainVertical = false; //Constrained vertical
-        this.controls.verticalMin = 1.0;
-        this.controls.verticalMax = 2.0;
 
         let direction = this.camera.getWorldDirection().clone();
         let angle = direction.angleTo(new THREE.Vector3(1,0,0));  // Forward and X axis
