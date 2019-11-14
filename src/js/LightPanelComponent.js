@@ -13,7 +13,7 @@ import {UnrealBloomPass} from 'three/examples/jsm/postprocessing/UnrealBloomPass
 const TrackballControls = require('three-trackballcontrols');
 
 import * as PANEL from './panel/LightPanel.js'
-import { time_of_day_color } from './panel/time_of_day_colors';
+import { TimeOfDayColor } from './panel/TimeOfDayColor';
 
 import '../css/main.css';
 import '../css/crt.css';
@@ -52,6 +52,7 @@ class App extends Component {
         this.controls.dispose();
     }
 
+
     sceneSetup = () => {
         const width = this.mount.clientWidth;
         const height = this.mount.clientHeight;
@@ -78,7 +79,7 @@ class App extends Component {
         FnWTable.forEach((obj,idx) => {
 
             const randomAlpha = ( Math.random() * 0.5 + 0.25 );
-            const panelHue = time_of_day_color(randomAlpha);
+            const panelHue = TimeOfDayColor(randomAlpha);
 
             const meshes = PANEL.CreatTextPanel(
                 obj.text.toUpperCase(),
@@ -99,6 +100,7 @@ class App extends Component {
             this.scene.add(meshes.itemMesh, meshes.occMesh);
 
         });
+
     };
 
     addEffects = () => {

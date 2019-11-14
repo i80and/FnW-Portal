@@ -4,7 +4,7 @@
  *
  * @returns {float} the percentage of the day that has passed.
  */
-function fraction_of_day() {
+function FractionOfDay() {
 
     const secondsInADay = 24 * 60 * 60;
     const now = new Date();
@@ -24,7 +24,7 @@ function fraction_of_day() {
  * @param {float} fraction a value between zero and one.
  * @return {{s: *, v: *, h: *}} HSV color using the convention of H ∈ [0,360], S ∈ [0,255], H ∈ [0,255]
  */
-function hsv_by_fraction( fraction ){
+function HSVByFraction( fraction ){
 
     const h = fraction*360.0;
     const s = 255.0;
@@ -42,7 +42,7 @@ function hsv_by_fraction( fraction ){
  * @param hsv
  * @returns {{r: number, b: number, g: number}} RGBA color using the convention of R, G, B ∈ [0,360], A ∈ [0,1].
  */
-function hsv_to_rgb( hsv ) {
+function HSVToRGB( hsv ) {
     let r, g, b;
 
     let h = hsv.h/360.0;
@@ -74,12 +74,13 @@ function hsv_to_rgb( hsv ) {
  * @param {{a: number, r: number, b: number, g: number}} rgba_color RGBA color as object literal.
  * @returns {string} string in "(r, g, b, a)" suitable for stylesheet use.
  */
-function rgba_to_css_str( rgba_color ){
+function RGBAToCssStyle( rgba_color ){
 
     const r = parseInt(rgba_color.r);
     const g = parseInt(rgba_color.g);
     const b = parseInt(rgba_color.b);
     const a = rgba_color.a;
+
 
     return `rgba(${r}, ${g}, ${b}, ${a})`
 }
@@ -96,14 +97,14 @@ function rgba_to_css_str( rgba_color ){
  * @param {number} alpha transparency of the resulting color.
  * @returns {string} a stylesheet friendly rgba string.
  */
-function time_of_day_color(alpha){
+function TimeOfDayColor(alpha){
 
-    let hsv = hsv_by_fraction( fraction_of_day() );
-    let rgb = hsv_to_rgb(hsv);
+    let hsv = HSVByFraction( FractionOfDay() );
+    let rgb = HSVToRGB(hsv);
     let rgba = { r: (rgb.r), g: (rgb.g), b: (rgb.b), a: alpha };
 
-    return rgba_to_css_str( rgba );
+    return RGBAToCssStyle( rgba );
 
 }
 
-export {time_of_day_color};
+export {TimeOfDayColor};
