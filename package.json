@@ -16,6 +16,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "react": "^16.11.0",
+    "react-device-detect": "^1.9.10",
     "react-dom": "^16.11.0",
     "three": "^0.110.0",
     "three-css3drenderer": "^1.0.1",

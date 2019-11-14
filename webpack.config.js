@@ -8,7 +8,7 @@ const htmlPlugin = new HtmlWebPackPlugin({
 });
 
 module.exports = {
-    entry: path.join(__dirname, "src", "js", "LightPanelComponent.js"),
+    entry: path.join(__dirname, "src", "js", "App.js"),
     target: 'node',
     plugins: [htmlPlugin],
     module: {

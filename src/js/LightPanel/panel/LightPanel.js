@@ -11,10 +11,10 @@ import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass';
 import {ShaderPass} from 'three/examples/jsm/postprocessing/ShaderPass';
 import {UnrealBloomPass} from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 
-import '../../css/fonts/Veger(light).ttf'
-import '../../css/main.css'
+import '../../../css/fonts/Veger(light).ttf'
+import '../../../css/main.css'
 
-import BadTVShader from '../thirdparty/Shaders/BadTvShader';
+import BadTVShader from '../../thirdparty/Shaders/BadTvShader';
 
 const lightColor = 0x0099ff;
 const DEFAULT_LAYER = 0;
@@ -210,53 +210,13 @@ function FilmPass() {
     return filmPass;
 }
 
-function OccComposer( scene, renderer, camera, occRenderTarget ){
-
-    const hBlur = HBlurPass();
-    const vBlur = VBlurPass();
-    const badTVPass = BadTVPass();
-    const vlPass = VLPass();
-
-    const occlusionComposer = new EffectComposer(renderer, occRenderTarget);
-    occlusionComposer.addPass( new RenderPass(scene, camera) );
-    occlusionComposer.addPass(hBlur);
-    occlusionComposer.addPass(vBlur);
-    occlusionComposer.addPass(hBlur);
-    occlusionComposer.addPass(vBlur);
-    occlusionComposer.addPass(hBlur);
-    occlusionComposer.addPass(badTVPass);
-    occlusionComposer.addPass(vlPass);
-
-    return occlusionComposer;
-}
-
-function MainComposer( scene, renderer, camera, occRenderTarget ) {
-    // Blend occRenderTarget into main render target
-    const blendPass = new ShaderPass(AdditiveBlendingShader);
-    blendPass.uniforms.tAdd.value = occRenderTarget.texture;
-    blendPass.renderToScreen = true;
-
-    const bloomPass = new UnrealBloomPass(width / height, 0.5, .8, .3);
-    const badTVPass = BadTVPass();
-    const filmPass = FilmPass();
-
-    const composer = new EffectComposer(renderer);
-    composer.addPass(new RenderPass(scene, camera));
-    composer.addPass(bloomPass);
-    composer.addPass(badTVPass);
-    composer.addPass(filmPass);
-    composer.addPass(blendPass);
-
-    return composer;
-}
-
 const CreatTextPanel = (text, details, color, x=0, y=0, z=0) => {
 
     const w = 200;
     const h = 120;
 
     const itemGeo = new THREE.PlaneGeometry(w, h);
-    const itemMaterial = new THREE.MeshBasicMaterial({transparent: true, opacity: 0.7, color: color, side: THREE.DoubleSide});
+    const itemMaterial = new THREE.MeshBasicMaterial({transparent: true, opacity: 0.8, color: color, side: THREE.DoubleSide});
 
     var bitmap = document.createElement('canvas');
     var ctx = bitmap.getContext('2d');
