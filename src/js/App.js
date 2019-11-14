@@ -7,12 +7,7 @@ import LightPanelMobile from "./LightPanel/LightPanelMobile";
 import '../css/main.css';
 import '../css/crt.css';
 
-import {
-    BrowserView,
-    MobileView,
-    isBrowser,
-    isMobile
-} from "react-device-detect";
+import { isMobile } from "react-device-detect";
 
 class Container extends React.Component {
 
@@ -27,7 +22,7 @@ class Container extends React.Component {
     render() {
         return this.renderContent();
     }
-    
+
 }
 
 const rootElement = document.getElementById("root");
