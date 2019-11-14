@@ -36,6 +36,33 @@ export default class LightPanel extends Component {
         window.cancelAnimationFrame(this.requestID);
     }
 
+    setupMouseControls = () => {
+        this.raycaster = new THREE.Raycaster();
+        this.mouse = new THREE.Vector2();
+    };
+
+    onClick = ( event ) => {
+
+        event.preventDefault();
+
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        mouse.x = ( event.clientX / this.mount.clientWidth ) * 2 - 1;
+        mouse.y = - ( event.clientY / this.mount.clientHeight ) * 2 + 1;
+
+        console.log(mouse);
+
+        raycaster.setFromCamera( mouse, this.camera );
+        const intersects = raycaster.intersectObjects( this.objects );
+
+        if ( intersects.length > 0 ) {
+
+            intersects[0].object.callback();
+
+        }
+
+    };
 
     sceneSetup = () => {
         const width = this.mount.clientWidth;
@@ -60,6 +87,7 @@ export default class LightPanel extends Component {
 
         const NumberEntries = Object.keys(FnWTable).length;
 
+        this.objects = [];
 
         FnWTable.forEach((obj,idx) => {
 
@@ -81,6 +109,12 @@ export default class LightPanel extends Component {
 
             meshes.occMesh.position.setFromSphericalCoords( rho, phi, theta );
             meshes.occMesh.lookAt(this.camera.position);
+
+            meshes.itemMesh.callback = function(){
+                open( obj.link, "_blank");
+            };
+
+            this.objects.push(meshes.itemMesh, meshes.occMesh);
 
             this.scene.add(meshes.itemMesh, meshes.occMesh);
 
@@ -181,6 +215,6 @@ export default class LightPanel extends Component {
     };
 
     render() {
-        return <div style={style} ref={ref => (this.mount = ref)} />;
+        return <div style={style} onClick={(e) => this.onClick(e)} ref={ref => (this.mount = ref)} />;
     }
 }
