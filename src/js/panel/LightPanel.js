@@ -14,7 +14,7 @@ import {UnrealBloomPass} from 'three/examples/jsm/postprocessing/UnrealBloomPass
 import '../../css/fonts/Veger(light).ttf'
 import '../../css/main.css'
 
-import BadTVShader from '../thirdparty/BadTvShader';
+import BadTVShader from '../thirdparty/Shaders/BadTvShader';
 
 const lightColor = 0x0099ff;
 const DEFAULT_LAYER = 0;
