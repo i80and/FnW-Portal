@@ -1,13 +1,23 @@
 @font-face {
-	font-family: 'verger-light';
-	src: url('fonts/Veger(light).ttf')  format('truetype');
+	font-family: 'VoyagerGrotesque';
+	src: url('fonts/VoyagerGrotesqueLight.eot');
+	src: local('Voyager Grotesque Light'), local('VoyagerGrotesqueLight'),
+	url('fonts/VoyagerGrotesqueLight.eot?#iefix') format('embedded-opentype'),
+	url('fonts/VoyagerGrotesqueLight.woff2') format('woff2'),
+	url('fonts/VoyagerGrotesqueLight.woff') format('woff'),
+	url('fonts/VoyagerGrotesqueLight.ttf') format('truetype'),
+	url('fonts/VoyagerGrotesqueLight.svg#fonts/VoyagerGrotesqueLight') format('svg');
+	font-weight: 300;
+	font-style: normal;
 }
+
+
 
 body {
 	margin: 0;
 	background-color: rgb(10,10,10);
 	color: #fff;
-	font-size: 13px;
+	font-family: "VoyagerGrotesque", monospace;
 	line-height: 24px;
 	overscroll-behavior: none;
 }

@@ -11,7 +11,12 @@ import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass';
 import {ShaderPass} from 'three/examples/jsm/postprocessing/ShaderPass';
 import {UnrealBloomPass} from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 
-import '../../../css/fonts/Veger(light).ttf'
+import '../../../css/fonts/VoyagerGrotesqueLight.eot'
+import '../../../css/fonts/VoyagerGrotesqueLight.svg'
+import '../../../css/fonts/VoyagerGrotesqueLight.ttf'
+import '../../../css/fonts/VoyagerGrotesqueLight.woff'
+import '../../../css/fonts/VoyagerGrotesqueLight.woff2'
+
 import '../../../css/main.css'
 
 import BadTVShader from '../../thirdparty/Shaders/BadTvShader';
@@ -222,7 +227,8 @@ const CreatTextPanel = (text, details, color, x=0, y=0, z=0) => {
     var ctx = bitmap.getContext('2d');
     bitmap.width = w;
     bitmap.height = h;
-    ctx.font = '24px verger-light';
+
+    ctx.font = '24px VoyagerGrotesque';
 
     ctx.fillStyle = '#4a4a4a';
     ctx.fillRect(0, 0, w, h);
@@ -234,7 +240,7 @@ const CreatTextPanel = (text, details, color, x=0, y=0, z=0) => {
     ctx.textAlign = "center";
     ctx.fillText(text, w/2, h*1/4);
 
-    ctx.font = '12px verger-light';
+    ctx.font = '12px VoyagerGrotesque';
     ctx.fillText(details, w/2, h*3/4);
 
     const itemTexture = new THREE.Texture(

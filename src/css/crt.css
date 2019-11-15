@@ -34,6 +34,6 @@
 
 .crt {
   animation: turn-on 4s linear;
-  font-family: verger-light, sans-serif;
+  font-family: "VoyagerGrotesque", sans-serif;
   box-shadow: inset 0 0 10vw 2vw rgba(177, 201, 178, 0.2);
 }
