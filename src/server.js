@@ -9,6 +9,8 @@ const HTML_FILE = path.join(DIST_DIR, 'index.html');
 
 app.set('trust proxy');
 
+app.use(cors());
+
 app.use(express.static(DIST_DIR));
 
 app.get('/', (req, res) => {
