@@ -9,6 +9,8 @@ import {ShaderPass} from 'three/examples/jsm/postprocessing/ShaderPass';
 import {UnrealBloomPass} from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 
 import * as PANEL from './Effects/LightPanel.js'
+import { SphericalCloud } from './Effects/SphereCloud'
+import { SphereicalWireFrame } from "./Effects/SphereWireFrame";
 import { TimeOfDayColor } from './Effects/TimeOfDayColor';
 
 import FnWTable from '../config/endpoints_list.json'
@@ -30,6 +32,7 @@ export default class LightPanel extends Component {
     componentDidMount() {
         this.sceneSetup();
         this.addSceneObjects();
+        this.addSphere();
         this.addEffects();
         window.addEventListener('resize', this.handleWindowResize);
     }
@@ -65,6 +68,12 @@ export default class LightPanel extends Component {
 
         }
 
+    };
+
+    addSphere = () => {
+        // const panelHue = TimeOfDayColor(0.8);
+        const particles = SphericalCloud(2000, 300, 0x0099ff);
+        this.scene.add(particles);
     };
 
     sceneSetup = () => {
