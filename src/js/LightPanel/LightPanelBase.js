@@ -18,6 +18,9 @@ const style = {
     width: '100hw'
 };
 
+const DEFAULT_LAYER = 0;
+const OCCLUSION_LAYER = 1;
+
 export default class LightPanel extends Component {
 
     constructor(props) {
@@ -173,7 +176,7 @@ export default class LightPanel extends Component {
         this.occlusionComposer.addPass(vBlur);
         this.occlusionComposer.addPass(hBlur);
         this.occlusionComposer.addPass(this.badTVPass);
-        this.occlusionComposer.addPass(vlPass);
+        // this.occlusionComposer.addPass(vlPass);
 
         // Blend occRenderTarget into main render target
         const blendPass = new ShaderPass(PANEL.AdditiveBlendingShader);
@@ -203,7 +206,9 @@ export default class LightPanel extends Component {
     };
 
     renderEffects = () => {
+        this.camera.layers.set(OCCLUSION_LAYER);
         this.occlusionComposer.render();
+        this.camera.layers.set(DEFAULT_LAYER);
         this.composer.render();
     };
 
