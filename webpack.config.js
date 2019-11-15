@@ -1,16 +1,21 @@
 const webpack = require('webpack');
 const path = require('path');
 const HtmlWebPackPlugin = require("html-webpack-plugin");
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 
 const htmlPlugin = new HtmlWebPackPlugin({
     template: "./src/index.html",
     filename: "./index.html"
 });
 
+const faviconPlugin = new FaviconsWebpackPlugin(
+  './src/css/favicon/aperture.png'
+);
+
 module.exports = {
     entry: path.join(__dirname, "src", "js", "App.js"),
     target: 'node',
-    plugins: [htmlPlugin],
+    plugins: [htmlPlugin, faviconPlugin],
     module: {
         rules: [
             {
