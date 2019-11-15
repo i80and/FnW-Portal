@@ -4,8 +4,8 @@ import ReactDOM from "react-dom";
 import LightPanelDesktop from "./LightPanel/LightPanelDesktop";
 import LightPanelMobile from "./LightPanel/LightPanelMobile";
 
-import '../css/main.css';
-import '../css/crt.css';
+import '../styles/main.css';
+import '../styles/crt.css';
 
 import { isMobile } from "react-device-detect";
 

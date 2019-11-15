@@ -11,13 +11,13 @@ import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass';
 import {ShaderPass} from 'three/examples/jsm/postprocessing/ShaderPass';
 import {UnrealBloomPass} from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 
-import '../../../css/fonts/VoyagerGrotesqueLight.eot'
-import '../../../css/fonts/VoyagerGrotesqueLight.svg'
-import '../../../css/fonts/VoyagerGrotesqueLight.ttf'
-import '../../../css/fonts/VoyagerGrotesqueLight.woff'
-import '../../../css/fonts/VoyagerGrotesqueLight.woff2'
+import '../../../styles/fonts/VoyagerGrotesqueLight.eot'
+import '../../../styles/fonts/VoyagerGrotesqueLight.svg'
+import '../../../styles/fonts/VoyagerGrotesqueLight.ttf'
+import '../../../styles/fonts/VoyagerGrotesqueLight.woff'
+import '../../../styles/fonts/VoyagerGrotesqueLight.woff2'
 
-import '../../../css/main.css'
+import '../../../styles/main.css'
 
 import BadTVShader from '../../thirdparty/Shaders/BadTvShader';
 

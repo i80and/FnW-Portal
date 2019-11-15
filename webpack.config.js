@@ -9,7 +9,7 @@ const htmlPlugin = new HtmlWebPackPlugin({
 });
 
 const faviconPlugin = new FaviconsWebpackPlugin(
-  './src/css/favicon/aperture.png'
+  './src/styles/favicon/aperture.png'
 );
 
 module.exports = {
