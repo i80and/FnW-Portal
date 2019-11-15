@@ -18,7 +18,7 @@ This package basically uses the MERN stack minus MongoDB.
 
 ## Where is this project deployed?
 
-http://www.fopsfire.net/portal/
+https://www.fopsfire.net
 
 ## What kind of trash fire aesthetic is this?
 
