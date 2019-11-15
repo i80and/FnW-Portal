@@ -57,8 +57,6 @@ export default class LightPanel extends Component {
         mouse.x = ( event.clientX / this.mount.clientWidth ) * 2 - 1;
         mouse.y = - ( event.clientY / this.mount.clientHeight ) * 2 + 1;
 
-        console.log(mouse);
-
         raycaster.setFromCamera( mouse, this.camera );
         const intersects = raycaster.intersectObjects( this.objects );
 
@@ -104,7 +102,8 @@ export default class LightPanel extends Component {
         FnWTable.forEach((obj,idx) => {
 
             const randomAlpha = ( Math.random() * 0.5 + 0.25 );
-            const panelHue = TimeOfDayColor(randomAlpha);
+            // const panelHue = TimeOfDayColor(randomAlpha);
+            const panelHue = 0x7fffff;
 
             const meshes = PANEL.CreatTextPanel(
                 obj.text.toUpperCase(),
