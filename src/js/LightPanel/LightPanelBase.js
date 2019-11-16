@@ -112,7 +112,10 @@ export default class LightPanel extends Component {
                 gltf.scene.position.y += 13;
                 gltf.scene.position.z -= 14;
 
-                let hueMaterial = new THREE.PointsMaterial({size: 0.001, color: 0x0099ff, opacity: 0.2});
+                let hueMaterial = new THREE.PointsMaterial({size: 0.0001,
+                    color: 0x0033cc,
+                    opacity: 0.1,
+                depthWrite: false});
 
                 this.scene.add( gltf.scene );
 
