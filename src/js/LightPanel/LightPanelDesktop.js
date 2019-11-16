@@ -22,9 +22,9 @@ export default class LightPanelDesktop extends PanelBase {
     controlsSetup = () => {
         this.controls = new THREE.FirstPersonControls(this.camera, this.mount);
         this.controls.enabled = true;
-        this.controls.lookSpeed = 1; //Speed of Mouse Moving View
-        this.controls.movementSpeed = 10; //Camera moving speed
-        this.controls.noFly = true;
+        this.controls.lookSpeed = 0.5; //Speed of Mouse Moving View
+        this.controls.movementSpeed = 50; //Camera moving speed
+        this.controls.noFly = false;
         this.controls.constrainVertical = false; //Constrained vertical
 
         let direction = this.camera.getWorldDirection().clone();
