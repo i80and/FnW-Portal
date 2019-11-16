@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+const TWEEN = require('@tweenjs/tween.js');
+
 const FirstPersonControls = require('three-first-person-controls')(THREE);
 
 import PanelBase from './LightPanelBase'

@@ -8,6 +8,7 @@ import {EffectComposer} from 'three/examples/jsm/postprocessing/EffectComposer';
 import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass';
 import {ShaderPass} from 'three/examples/jsm/postprocessing/ShaderPass';
 import {UnrealBloomPass} from 'three/examples/jsm/postprocessing/UnrealBloomPass';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 import * as PANEL from './Effects/LightPanel.js'
 import { SphericalCloud } from './Effects/SphereCloud'
@@ -15,6 +16,8 @@ import { SphereicalWireFrame } from "./Effects/SphereWireFrame";
 import { TimeOfDayColor } from './Effects/TimeOfDayColor';
 
 import FnWTable from '../config/endpoints_list.json'
+import BGTexGLTF from '../../styles/textures/choshi-otaki_falls_oirase_valley_aomori/scene.glb'
+
 
 const style = {
     height: '100vh',
@@ -33,8 +36,9 @@ export default class LightPanel extends Component {
     componentDidMount() {
         this.sceneSetup();
         this.addSceneObjects();
-        this.addSphere();
+        // this.addSphere();
         this.addEffects();
+        this.loadTexture();
         window.addEventListener('resize', this.handleWindowResize);
     }
 
@@ -66,6 +70,79 @@ export default class LightPanel extends Component {
             intersects[0].object.callback();
 
         }
+
+    };
+
+    transform = ( duration = 2000 ) => {
+
+        TWEEN.default.removeAll();
+
+        for ( let i = 0; i < this.sceneObjs.length; i ++ ) {
+
+            let object = this.sceneObjs[ i ];
+            let target = this.sceneTargets[ i ];
+
+            new TWEEN.default.Tween( object.position )
+                .to( { x: target.position.x, y: target.position.y, z: target.position.z }, Math.random() * duration + duration )
+                .easing( TWEEN.default.Easing.Quadratic.InOut )
+                .start();
+        }
+
+    };
+
+    loadTexture = () => {
+
+        const loader = new GLTFLoader();
+
+        this.sceneTargets = [];
+        this.sceneObjs= [];
+
+        loader.load( BGTexGLTF, ( gltf ) => {
+
+                gltf.scene.scale.multiplyScalar(2);
+
+                const box = new THREE.Box3().setFromObject( gltf.scene );
+                const center = box.getCenter( new THREE.Vector3() );
+
+                gltf.scene.position.x += ( gltf.scene.position.x - center.x );
+                gltf.scene.position.y += ( gltf.scene.position.y - center.y );
+                gltf.scene.position.z += ( gltf.scene.position.z - center.z );
+
+                gltf.scene.position.x += 20;
+                gltf.scene.position.y += 13;
+                gltf.scene.position.z -= 14;
+
+                let hueMaterial = new THREE.PointsMaterial({size: 0.001, color: 0x0099ff, opacity: 0.2});
+
+                this.scene.add( gltf.scene );
+
+                gltf.scene.traverse((o) => {
+
+                    let object = new THREE.Points();
+                    object.position.copy( o.position );
+
+                    this.sceneTargets.push(object);
+
+                    o.material = hueMaterial;
+
+                    o.position.copy( this.camera.position );
+
+                    o.position.x += (Math.random() - 0.5)*10000;
+                    o.position.y += (Math.random() - 0.5)*10000;
+                    o.position.z += (Math.random() - 0.5)*10000;
+
+                    this.sceneObjs.push(o);
+                });
+
+                this.transform();
+
+
+        }, undefined,
+            ( error ) => {
+
+            console.error( error );
+
+        } );
 
     };
 
@@ -102,7 +179,6 @@ export default class LightPanel extends Component {
 
         FnWTable.forEach((obj,idx) => {
 
-            const randomAlpha = ( Math.random() * 0.5 + 0.25 );
             // const panelHue = TimeOfDayColor(randomAlpha);
             const panelHue = 0x7fffff;
 
@@ -114,7 +190,7 @@ export default class LightPanel extends Component {
 
             const phi = Math.acos( - 1 + ( 2 * idx ) / NumberEntries );
             const theta  = Math.sqrt( NumberEntries * Math.PI ) * phi;
-            const rho = 250;
+            const rho = 300;
 
             meshes.itemMesh.position.setFromSphericalCoords( rho, phi, theta );
             meshes.itemMesh.lookAt(this.camera.position);
@@ -127,7 +203,6 @@ export default class LightPanel extends Component {
             };
 
             this.objects.push(meshes.itemMesh, meshes.occMesh);
-
             this.scene.add(meshes.itemMesh, meshes.occMesh);
 
         });
@@ -195,7 +270,7 @@ export default class LightPanel extends Component {
         this.composer = new EffectComposer(this.renderer);
         this.composer.addPass(new RenderPass(this.scene, this.camera));
         this.composer.addPass(bpPass);
-        this.composer.addPass(bloomPass);
+        // this.composer.addPass(bloomPass);
         this.composer.addPass(this.badTVPass);
         this.composer.addPass(this.filmPass);
         this.composer.addPass(blendPass);
@@ -215,6 +290,9 @@ export default class LightPanel extends Component {
     };
 
     renderEffects = () => {
+        this.renderer.render( this.scene, this.camera );
+        TWEEN.default.update();
+
         this.camera.layers.set(OCCLUSION_LAYER);
         this.occlusionComposer.render();
         this.camera.layers.set(DEFAULT_LAYER);
@@ -226,6 +304,7 @@ export default class LightPanel extends Component {
 
         this.filmPass.uniforms.time.value += timeDelta;
         this.badTVPass.uniforms.time.value += 0.01;
+
     };
 
     render() {
