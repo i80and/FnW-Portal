@@ -28,6 +28,18 @@ module.exports = {
                 use:['style-loader','css-loader']
             },
             {
+                test: /\.(gltf|bin|glb)$/,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: '[name].[ext]',
+                            outputPath: 'textures/'
+                        }
+                    }
+                ]
+            },
+            {
                 test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
                 use: [
                     {
