@@ -23,5 +23,10 @@
         "text": "Github",
         "detail": "Public Programming Projects",
         "link": "https://github.com/SashaNullptr"
+    },
+    {
+        "text": "Streaming",
+        "detail": "Media Streaming Server.",
+        "link": "https://www.fopsfire.net/streaming/"
     }
 ]
