@@ -17,7 +17,7 @@
     {
         "text": "Registry",
         "detail": "Private Docker Registry",
-        "link": "https://www.fopsfire.net/docker/admin/"
+        "link": "https://www.fopsfire.net/docker/registry/"
     },
     {
         "text": "Github",
@@ -28,5 +28,10 @@
         "text": "Streaming",
         "detail": "Media Streaming Server.",
         "link": "https://www.fopsfire.net/streaming/"
+    },
+    {
+        "text": "Files",
+        "detail": "Static public files.",
+        "link": "https://www.fopsfire.net/public/files/"
     }
 ]
