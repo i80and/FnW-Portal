@@ -10,6 +10,11 @@
         "link": "https://www.fopsfire.net/docs/infra/"
     },
     {
+        "text": "Wiki",
+        "detail": "Personal Wiki",
+        "link": "https://www.fopsfire.net/wiki/"
+    },
+    {
         "text": "Monitoring",
         "detail": "Service Monitoring",
         "link": "https://www.fopsfire.net/monitoring/login"
