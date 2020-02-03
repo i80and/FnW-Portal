@@ -4,10 +4,10 @@ import ReactDOM from "react-dom";
 import * as THREE from 'three';
 const TWEEN = require('@tweenjs/tween.js');
 
-import {EffectComposer} from 'three/examples/jsm/postprocessing/EffectComposer';
-import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass';
-import {ShaderPass} from 'three/examples/jsm/postprocessing/ShaderPass';
-import {UnrealBloomPass} from 'three/examples/jsm/postprocessing/UnrealBloomPass';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 import * as PANEL from './Effects/LightPanel.js'
