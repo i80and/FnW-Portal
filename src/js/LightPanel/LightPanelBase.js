@@ -35,7 +35,7 @@ export default class LightPanel extends Component {
     componentDidMount() {
         this.sceneSetup();
         this.addSceneObjects();
-        this.addSphere();
+        // this.addSphere();
         this.addEffects();
         this.loadTexture();
         window.addEventListener('resize', this.handleWindowResize);
