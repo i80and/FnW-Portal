@@ -16,7 +16,7 @@ import { SphereicalWireFrame } from "./Effects/SphereWireFrame";
 import { TimeOfDayColor } from './Effects/TimeOfDayColor';
 
 import FnWTable from '../config/endpoints_list.json'
-
+import BGTexGLTF from '../../styles/textures/choshi-otaki_falls_oirase_valley_aomori/scene.glb'
 
 const style = {
     height: '100vh',
@@ -37,7 +37,7 @@ export default class LightPanel extends Component {
         this.addSceneObjects();
         this.addSphere();
         this.addEffects();
-        // this.loadTexture();
+        this.loadTexture();
         window.addEventListener('resize', this.handleWindowResize);
     }
 
@@ -93,6 +93,65 @@ export default class LightPanel extends Component {
         // const panelHue = TimeOfDayColor(0.8);
         const particles = SphericalCloud(2000, 300, 0x0099ff);
         this.scene.add(particles);
+    };
+
+    loadTexture = () => {
+
+        const loader = new GLTFLoader();
+
+        this.sceneTargets = [];
+        this.sceneObjs= [];
+
+        loader.load( BGTexGLTF, ( gltf ) => {
+
+                gltf.scene.scale.multiplyScalar(2);
+
+                const box = new THREE.Box3().setFromObject( gltf.scene );
+                const center = box.getCenter( new THREE.Vector3() );
+
+                gltf.scene.position.x += ( gltf.scene.position.x - center.x );
+                gltf.scene.position.y += ( gltf.scene.position.y - center.y );
+                gltf.scene.position.z += ( gltf.scene.position.z - center.z );
+
+                gltf.scene.position.x += 20;
+                gltf.scene.position.y += 13;
+                gltf.scene.position.z -= 14;
+
+                let hueMaterial = new THREE.PointsMaterial({size: 0.0001,
+                    color: 0x0033cc,
+                    opacity: 0.1,
+                    depthWrite: false});
+
+                this.scene.add( gltf.scene );
+
+                gltf.scene.traverse((o) => {
+
+                    let object = new THREE.Points();
+                    object.position.copy( o.position );
+
+                    this.sceneTargets.push(object);
+
+                    o.material = hueMaterial;
+
+                    o.position.copy( this.camera.position );
+
+                    o.position.x += (Math.random() - 0.5)*10000;
+                    o.position.y += (Math.random() - 0.5)*10000;
+                    o.position.z += (Math.random() - 0.5)*10000;
+
+                    this.sceneObjs.push(o);
+                });
+
+                this.transform();
+
+
+            }, undefined,
+            ( error ) => {
+
+                console.error( error );
+
+            } );
+
     };
 
     sceneSetup = () => {
