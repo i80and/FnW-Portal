@@ -55,7 +55,6 @@ function loadPointCloud(url, onHeaderReadCallback, onPointCallback) {
             const xView = new Uint16Array(buffer.slice(0, chunkLength))
             const yView = new Uint16Array(buffer.slice(chunkLength, chunkLength * 2))
             const zView = new Uint16Array(buffer.slice(chunkLength * 2, chunkLength * 3))
-            const colorView = new Uint16Array(buffer.slice(chunkLength * 3, chunkLength * 4))
 
             onHeaderReadCallback(nPoints);
 
@@ -64,12 +63,7 @@ function loadPointCloud(url, onHeaderReadCallback, onPointCallback) {
                 const y = decodeFloat16(yView[i]);
                 const z = decodeFloat16(zView[i]);
 
-                const rgb565 = colorView[i];
-                const r8 = ((((rgb565 >> 11) & 0x1F) * 527) + 23) >> 6;
-                const g8 = ((((rgb565 >> 5) & 0x3F) * 259) + 33) >> 6;
-                const b8 = (((rgb565 & 0x1F) * 527) + 23) >> 6;
-
-                onPointCallback(x, y, z, r8, g8, b8)
+                onPointCallback(x, y, z)
             }
 
             resolve()
@@ -152,21 +146,14 @@ export default class LightPanel extends Component {
 
         let i = 0;
         let vertices = null;
-        let colors = null;
-        // const points = new THREE.Points();
-        // this.sceneTargets.push(points);
 
         loadPointCloud(BGDRCFile, (nPoints) => {
             vertices = new Float32Array(nPoints * 3);
-            colors = new Float32Array(nPoints * 3);
         },
-        (x, y, z, r, g, b) => {
+        (x, y, z) => {
             vertices[i] = (x * 10) + 20;
             vertices[i+1] = (y * 10) + 13;
             vertices[i+2] = (z * 10) - 14;
-            colors[i] = r / 255.0;
-            colors[i+1] = g / 255.0;
-            colors[i+2] = b / 255.0;
             i += 3;
         }).then(() => {
             // gltf.scene.scale.multiplyScalar(2);
@@ -184,12 +171,12 @@ export default class LightPanel extends Component {
 
             const geometry = new THREE.BufferGeometry();
             geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
-            geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
 
-            const material = new THREE.PointsMaterial({vertexColors: true,
-                opacity: 1.0,
+            const material = new THREE.PointsMaterial({
+                color: 0x0033cc,
+                opacity: 0.1,
                 depthWrite: false,
-                size: 0.25});
+                size: 0.5});
 
             const points = new THREE.Points( geometry, material );
 

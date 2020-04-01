@@ -23,7 +23,7 @@ def main() -> None:
     xs: List[float] = []
     ys: List[float] = []
     zs: List[float] = []
-    rgbs: List[int] = []
+    # rgbs: List[int] = []
 
     with open(sys.argv[1], "r") as f:
         for line in f.readlines():
@@ -41,13 +41,13 @@ def main() -> None:
         xs.append(x)
         ys.append(y)
         zs.append(z)
-        rgbs.append(rgb)
+        # rgbs.append(rgb)
 
     xs_bin = b"".join(FloatStruct.pack(x) for x in xs)
     ys_bin = b"".join(FloatStruct.pack(y) for y in ys)
     zs_bin = b"".join(FloatStruct.pack(z) for z in zs)
-    rgb_bin = b"".join(ShortStruct.pack(rgb) for rgb in rgbs)
-    buffer2 = [b"SKNKPNTC", IntStruct.pack(len(xs)), xs_bin, ys_bin, zs_bin, rgb_bin]
+    # rgb_bin = b"".join(ShortStruct.pack(rgb) for rgb in rgbs)
+    buffer2 = [b"SKNKPNTC", IntStruct.pack(len(xs)), xs_bin, ys_bin, zs_bin]
 
     with open(sys.argv[2], "wb") as fb:
         for part in buffer2:
