@@ -28,13 +28,13 @@ module.exports = {
                 use:['style-loader','css-loader']
             },
             {
-                test: /\.(gltf|bin|glb)$/,
+                test: /\.(bin)(\.br)?$/,
                 use: [
                     {
                         loader: 'file-loader',
                         options: {
                             name: '[name].[ext]',
-                            outputPath: 'textures/'
+                            outputPath: 'assets/'
                         }
                     }
                 ]

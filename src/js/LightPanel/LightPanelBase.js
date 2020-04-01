@@ -8,7 +8,6 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 import * as PANEL from './Effects/LightPanel.js'
 import { SphericalCloud } from './Effects/SphereCloud'
@@ -16,7 +15,8 @@ import { SphereicalWireFrame } from "./Effects/SphereWireFrame";
 import { TimeOfDayColor } from './Effects/TimeOfDayColor';
 
 import FnWTable from '../config/endpoints_list.json'
-import BGTexGLTF from '../../styles/textures/choshi-otaki_falls_oirase_valley_aomori/scene.glb'
+
+import BGDRCFile from '../../styles/assets/foo.bin'
 
 const style = {
     height: '100vh',
@@ -25,6 +25,57 @@ const style = {
 
 const DEFAULT_LAYER = 0;
 const OCCLUSION_LAYER = 1;
+
+function decodeFloat16(binary) {
+    const exponent = (binary & 0x7C00) >> 10;
+    const fraction = binary & 0x03FF;
+    return (binary >> 15 ? -1 : 1) * (
+        exponent ?
+        (
+            exponent === 0x1F ?
+            fraction ? NaN : Infinity :
+            Math.pow(2, exponent - 15) * (1 + fraction / 0x400)
+        ) :
+        6.103515625e-5 * (fraction / 0x400)
+    );
+}
+
+function loadPointCloud(url, onHeaderReadCallback, onPointCallback) {
+    const loader = new THREE.FileLoader();
+    loader.setResponseType( 'arraybuffer' );
+    return new Promise((resolve, reject) => {
+        loader.load(url, (buffer) => {
+            const view = new DataView(buffer);
+
+            // Read and cut off the header
+            const nPoints = view.getUint32(8, true);
+            buffer = buffer.slice(12);
+
+            const chunkLength = nPoints * 2;
+            const xView = new Uint16Array(buffer.slice(0, chunkLength))
+            const yView = new Uint16Array(buffer.slice(chunkLength, chunkLength * 2))
+            const zView = new Uint16Array(buffer.slice(chunkLength * 2, chunkLength * 3))
+            const colorView = new Uint16Array(buffer.slice(chunkLength * 3, chunkLength * 4))
+
+            onHeaderReadCallback(nPoints);
+
+            for (let i = 0; i < nPoints; i += 1) {
+                const x = decodeFloat16(xView[i]);
+                const y = decodeFloat16(yView[i]);
+                const z = decodeFloat16(zView[i]);
+
+                const rgb565 = colorView[i];
+                const r8 = ((((rgb565 >> 11) & 0x1F) * 527) + 23) >> 6;
+                const g8 = ((((rgb565 >> 5) & 0x3F) * 259) + 33) >> 6;
+                const b8 = (((rgb565 & 0x1F) * 527) + 23) >> 6;
+
+                onPointCallback(x, y, z, r8, g8, b8)
+            }
+
+            resolve()
+        }, () => {}, reject)
+    })
+}
 
 export default class LightPanel extends Component {
 
@@ -96,62 +147,59 @@ export default class LightPanel extends Component {
     };
 
     loadTexture = () => {
-
-        const loader = new GLTFLoader();
-
         this.sceneTargets = [];
-        this.sceneObjs= [];
+        this.sceneObjs = [];
 
-        loader.load( BGTexGLTF, ( gltf ) => {
+        let i = 0;
+        let vertices = null;
+        let colors = null;
+        // const points = new THREE.Points();
+        // this.sceneTargets.push(points);
 
-                gltf.scene.scale.multiplyScalar(2);
+        loadPointCloud(BGDRCFile, (nPoints) => {
+            vertices = new Float32Array(nPoints * 3);
+            colors = new Float32Array(nPoints * 3);
+        },
+        (x, y, z, r, g, b) => {
+            vertices[i] = (x * 10) + 20;
+            vertices[i+1] = (y * 10) + 13;
+            vertices[i+2] = (z * 10) - 14;
+            colors[i] = r / 255.0;
+            colors[i+1] = g / 255.0;
+            colors[i+2] = b / 255.0;
+            i += 3;
+        }).then(() => {
+            // gltf.scene.scale.multiplyScalar(2);
 
-                const box = new THREE.Box3().setFromObject( gltf.scene );
-                const center = box.getCenter( new THREE.Vector3() );
+            // const box = new THREE.Box3().setFromObject( gltf.scene );
+            // const center = box.getCenter( new THREE.Vector3() );
 
-                gltf.scene.position.x += ( gltf.scene.position.x - center.x );
-                gltf.scene.position.y += ( gltf.scene.position.y - center.y );
-                gltf.scene.position.z += ( gltf.scene.position.z - center.z );
+            // gltf.scene.position.x += ( gltf.scene.position.x - center.x );
+            // gltf.scene.position.y += ( gltf.scene.position.y - center.y );
+            // gltf.scene.position.z += ( gltf.scene.position.z - center.z );
 
-                gltf.scene.position.x += 20;
-                gltf.scene.position.y += 13;
-                gltf.scene.position.z -= 14;
+            // gltf.scene.position.x += 20;
+            // gltf.scene.position.y += 13;
+            // gltf.scene.position.z -= 14;
 
-                let hueMaterial = new THREE.PointsMaterial({size: 0.0001,
-                    color: 0x0033cc,
-                    opacity: 0.1,
-                    depthWrite: false});
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
+            geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
 
-                this.scene.add( gltf.scene );
+            const material = new THREE.PointsMaterial({vertexColors: true,
+                opacity: 1.0,
+                depthWrite: false,
+                size: 0.25});
 
-                gltf.scene.traverse((o) => {
+            const points = new THREE.Points( geometry, material );
 
-                    let object = new THREE.Points();
-                    object.position.copy( o.position );
+            this.sceneObjs.push(points);
+            this.sceneTargets.push(points);
+            this.scene.add(points);
 
-                    this.sceneTargets.push(object);
-
-                    o.material = hueMaterial;
-
-                    o.position.copy( this.camera.position );
-
-                    o.position.x += (Math.random() - 0.5)*10000;
-                    o.position.y += (Math.random() - 0.5)*10000;
-                    o.position.z += (Math.random() - 0.5)*10000;
-
-                    this.sceneObjs.push(o);
-                });
-
-                this.transform();
-
-
-            }, undefined,
-            ( error ) => {
-
-                console.error( error );
-
-            } );
-
+            this.transform();
+            console.log("Ready!")
+        })
     };
 
     sceneSetup = () => {
@@ -271,11 +319,11 @@ export default class LightPanel extends Component {
 
         this.composer = new EffectComposer(this.renderer);
         this.composer.addPass(new RenderPass(this.scene, this.camera));
-        this.composer.addPass(bpPass);
+        // this.composer.addPass(bpPass);
         // this.composer.addPass(bloomPass);
-        this.composer.addPass(this.badTVPass);
-        this.composer.addPass(this.filmPass);
-        this.composer.addPass(blendPass);
+        // this.composer.addPass(this.badTVPass);
+        // this.composer.addPass(this.filmPass);
+        // this.composer.addPass(blendPass);
 
         this.clock = new THREE.Clock(true);
 
