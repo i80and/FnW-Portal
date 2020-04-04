@@ -15,8 +15,7 @@ import { SphereicalWireFrame } from "./Effects/SphereWireFrame";
 import { TimeOfDayColor } from './Effects/TimeOfDayColor';
 
 import FnWTable from '../config/endpoints_list.json'
-
-import BGDRCFile from '../../styles/assets/foo.bin'
+import BGDRCFile from '../../styles/assets/foo.bin';
 
 const style = {
     height: '100vh',
@@ -80,7 +79,6 @@ export default class LightPanel extends Component {
     componentDidMount() {
         this.sceneSetup();
         this.addSceneObjects();
-        // this.addSphere();
         this.addEffects();
         this.loadTexture();
         window.addEventListener('resize', this.handleWindowResize);
@@ -146,14 +144,32 @@ export default class LightPanel extends Component {
 
         let i = 0;
         let vertices = null;
+        const scale_factor = 75;
+
+        const rotate_x = (x,y,z, theta=-Math.PI/2) => {
+            return x
+        };
+
+        const rotate_y = (x,y,z, theta=-Math.PI/2) => {
+            return y*Math.cos(theta) - z*Math.sin(theta);
+        };
+
+        const rotate_z = (x,y,z, theta=-Math.PI/2) => {
+            return y* Math.sin(theta) + z*Math.cos(theta);
+        };
 
         loadPointCloud(BGDRCFile, (nPoints) => {
             vertices = new Float32Array(nPoints * 3);
         },
         (x, y, z) => {
-            vertices[i] = (x * 10) + 20;
-            vertices[i+1] = (y * 10) + 13;
-            vertices[i+2] = (z * 10) - 14;
+            const theta = -Math.PI/2;
+            const x_prime = x * scale_factor;
+            const y_prime = y * scale_factor;
+            const z_prime = (z * scale_factor) - 313*scale_factor;
+
+            vertices[i] = rotate_x(x_prime, y_prime, z_prime, theta);
+            vertices[i+1] = rotate_y(x_prime, y_prime, z_prime, theta);
+            vertices[i+2] = rotate_z(x_prime, y_prime, z_prime, theta);
             i += 3;
         }).then(() => {
             // gltf.scene.scale.multiplyScalar(2);
@@ -180,11 +196,17 @@ export default class LightPanel extends Component {
 
             const points = new THREE.Points( geometry, material );
 
-            this.sceneObjs.push(points);
-            this.sceneTargets.push(points);
+            // const starting_geometry = new THREE.BufferGeometry();
+            // const rand_vertices = vertices.map(element => element += (Math.random() - 0.5)*10000);
+            //
+            // starting_geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( rand_vertices, 3 ) );
+            // const starting_points = new THREE.Points( starting_geometry, material );
+
+            // this.sceneObjs.push(starting_points);
+            // this.sceneTargets.push(points);
             this.scene.add(points);
 
-            this.transform();
+            // this.transform();
             console.log("Ready!")
         })
     };
