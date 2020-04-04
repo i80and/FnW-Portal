@@ -127,18 +127,6 @@ export default class LightPanel extends Component {
             vertices[i+2] = rotate_z(x_prime, y_prime, z_prime, theta);
             i += 3;
         }).then(() => {
-            // gltf.scene.scale.multiplyScalar(2);
-
-            // const box = new THREE.Box3().setFromObject( gltf.scene );
-            // const center = box.getCenter( new THREE.Vector3() );
-
-            // gltf.scene.position.x += ( gltf.scene.position.x - center.x );
-            // gltf.scene.position.y += ( gltf.scene.position.y - center.y );
-            // gltf.scene.position.z += ( gltf.scene.position.z - center.z );
-
-            // gltf.scene.position.x += 20;
-            // gltf.scene.position.y += 13;
-            // gltf.scene.position.z -= 14;
 
             const geometry = new THREE.BufferGeometry();
             geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
