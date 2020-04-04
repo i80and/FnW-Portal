@@ -8,7 +8,6 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 import * as PANEL from './Effects/LightPanel.js'
 import { SphericalCloud } from './Effects/SphereCloud'
@@ -16,7 +15,7 @@ import { SphereicalWireFrame } from "./Effects/SphereWireFrame";
 import { TimeOfDayColor } from './Effects/TimeOfDayColor';
 
 import FnWTable from '../config/endpoints_list.json'
-
+import BGDRCFile from '../../styles/assets/foo.bin';
 
 const style = {
     height: '100vh',
@@ -25,6 +24,51 @@ const style = {
 
 const DEFAULT_LAYER = 0;
 const OCCLUSION_LAYER = 1;
+
+function decodeFloat16(binary) {
+    const exponent = (binary & 0x7C00) >> 10;
+    const fraction = binary & 0x03FF;
+    return (binary >> 15 ? -1 : 1) * (
+        exponent ?
+        (
+            exponent === 0x1F ?
+            fraction ? NaN : Infinity :
+            Math.pow(2, exponent - 15) * (1 + fraction / 0x400)
+        ) :
+        6.103515625e-5 * (fraction / 0x400)
+    );
+}
+
+function loadPointCloud(url, onHeaderReadCallback, onPointCallback) {
+    const loader = new THREE.FileLoader();
+    loader.setResponseType( 'arraybuffer' );
+    return new Promise((resolve, reject) => {
+        loader.load(url, (buffer) => {
+            const view = new DataView(buffer);
+
+            // Read and cut off the header
+            const nPoints = view.getUint32(8, true);
+            buffer = buffer.slice(12);
+
+            const chunkLength = nPoints * 2;
+            const xView = new Uint16Array(buffer.slice(0, chunkLength))
+            const yView = new Uint16Array(buffer.slice(chunkLength, chunkLength * 2))
+            const zView = new Uint16Array(buffer.slice(chunkLength * 2, chunkLength * 3))
+
+            onHeaderReadCallback(nPoints);
+
+            for (let i = 0; i < nPoints; i += 1) {
+                const x = decodeFloat16(xView[i]);
+                const y = decodeFloat16(yView[i]);
+                const z = decodeFloat16(zView[i]);
+
+                onPointCallback(x, y, z)
+            }
+
+            resolve()
+        }, () => {}, reject)
+    })
+}
 
 export default class LightPanel extends Component {
 
@@ -35,9 +79,8 @@ export default class LightPanel extends Component {
     componentDidMount() {
         this.sceneSetup();
         this.addSceneObjects();
-        this.addSphere();
         this.addEffects();
-        // this.loadTexture();
+        this.loadTexture();
         window.addEventListener('resize', this.handleWindowResize);
     }
 
@@ -93,6 +136,79 @@ export default class LightPanel extends Component {
         // const panelHue = TimeOfDayColor(0.8);
         const particles = SphericalCloud(2000, 300, 0x0099ff);
         this.scene.add(particles);
+    };
+
+    loadTexture = () => {
+        this.sceneTargets = [];
+        this.sceneObjs = [];
+
+        let i = 0;
+        let vertices = null;
+        const scale_factor = 75;
+
+        const rotate_x = (x,y,z, theta=-Math.PI/2) => {
+            return x
+        };
+
+        const rotate_y = (x,y,z, theta=-Math.PI/2) => {
+            return y*Math.cos(theta) - z*Math.sin(theta);
+        };
+
+        const rotate_z = (x,y,z, theta=-Math.PI/2) => {
+            return y* Math.sin(theta) + z*Math.cos(theta);
+        };
+
+        loadPointCloud(BGDRCFile, (nPoints) => {
+            vertices = new Float32Array(nPoints * 3);
+        },
+        (x, y, z) => {
+            const theta = -Math.PI/2;
+            const x_prime = x * scale_factor;
+            const y_prime = y * scale_factor;
+            const z_prime = (z * scale_factor) - 313*scale_factor;
+
+            vertices[i] = rotate_x(x_prime, y_prime, z_prime, theta);
+            vertices[i+1] = rotate_y(x_prime, y_prime, z_prime, theta);
+            vertices[i+2] = rotate_z(x_prime, y_prime, z_prime, theta);
+            i += 3;
+        }).then(() => {
+            // gltf.scene.scale.multiplyScalar(2);
+
+            // const box = new THREE.Box3().setFromObject( gltf.scene );
+            // const center = box.getCenter( new THREE.Vector3() );
+
+            // gltf.scene.position.x += ( gltf.scene.position.x - center.x );
+            // gltf.scene.position.y += ( gltf.scene.position.y - center.y );
+            // gltf.scene.position.z += ( gltf.scene.position.z - center.z );
+
+            // gltf.scene.position.x += 20;
+            // gltf.scene.position.y += 13;
+            // gltf.scene.position.z -= 14;
+
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
+
+            const material = new THREE.PointsMaterial({
+                color: 0x0033cc,
+                opacity: 0.1,
+                depthWrite: false,
+                size: 0.5});
+
+            const points = new THREE.Points( geometry, material );
+
+            // const starting_geometry = new THREE.BufferGeometry();
+            // const rand_vertices = vertices.map(element => element += (Math.random() - 0.5)*10000);
+            //
+            // starting_geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( rand_vertices, 3 ) );
+            // const starting_points = new THREE.Points( starting_geometry, material );
+
+            // this.sceneObjs.push(starting_points);
+            // this.sceneTargets.push(points);
+            this.scene.add(points);
+
+            // this.transform();
+            console.log("Ready!")
+        })
     };
 
     sceneSetup = () => {
@@ -213,7 +329,7 @@ export default class LightPanel extends Component {
         this.composer = new EffectComposer(this.renderer);
         this.composer.addPass(new RenderPass(this.scene, this.camera));
         this.composer.addPass(bpPass);
-        // this.composer.addPass(bloomPass);
+        this.composer.addPass(bloomPass);
         this.composer.addPass(this.badTVPass);
         this.composer.addPass(this.filmPass);
         this.composer.addPass(blendPass);

@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
+const CompressionPlugin = require('compression-webpack-plugin')
 
 const htmlPlugin = new HtmlWebPackPlugin({
     template: "./src/index.html",
@@ -12,10 +13,20 @@ const faviconPlugin = new FaviconsWebpackPlugin(
   './src/styles/favicon/aperture.png'
 );
 
+const compressionPlugin = new CompressionPlugin({
+    filename: '[path].br[query]',
+    algorithm: 'brotliCompress',
+    test: /\.js$|\.css$|\.html$|\.eot?.+$|\.ttf?.+$|\.woff?.+$||\.svg?.+$|\.bin?.+$/,
+    compressionOptions: { level: 11 },
+    threshold: 10240,
+    minRatio: 0.8,
+    deleteOriginalAssets: false,
+});
+
 module.exports = {
     entry: path.join(__dirname, "src", "js", "App.js"),
-    target: 'node',
-    plugins: [htmlPlugin, faviconPlugin],
+    target: 'web',
+    plugins: [htmlPlugin, faviconPlugin,  compressionPlugin],
     module: {
         rules: [
             {
@@ -28,13 +39,13 @@ module.exports = {
                 use:['style-loader','css-loader']
             },
             {
-                test: /\.(gltf|bin|glb)$/,
+                test: /\.(bin)?$/,
                 use: [
                     {
                         loader: 'file-loader',
                         options: {
                             name: '[name].[ext]',
-                            outputPath: 'textures/'
+                            outputPath: 'assets/'
                         }
                     }
                 ]
