@@ -328,11 +328,11 @@ export default class LightPanel extends Component {
 
         this.composer = new EffectComposer(this.renderer);
         this.composer.addPass(new RenderPass(this.scene, this.camera));
-        // this.composer.addPass(bpPass);
-        // this.composer.addPass(bloomPass);
-        // this.composer.addPass(this.badTVPass);
-        // this.composer.addPass(this.filmPass);
-        // this.composer.addPass(blendPass);
+        this.composer.addPass(bpPass);
+        this.composer.addPass(bloomPass);
+        this.composer.addPass(this.badTVPass);
+        this.composer.addPass(this.filmPass);
+        this.composer.addPass(blendPass);
 
         this.clock = new THREE.Clock(true);
 
