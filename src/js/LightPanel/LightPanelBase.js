@@ -13,6 +13,7 @@ import * as PANEL from './Effects/LightPanel.js'
 import { SphericalCloud } from './Effects/SphereCloud'
 import { SphereicalWireFrame } from "./Effects/SphereWireFrame";
 import { TimeOfDayColor } from './Effects/TimeOfDayColor';
+import { loadPointCloud } from '../Loaders/SKNKPNTCLoader';
 
 import FnWTable from '../config/endpoints_list.json'
 import BGDRCFile from '../../styles/assets/foo.bin';
@@ -87,44 +88,53 @@ export default class LightPanel extends Component {
 
     };
 
-    addSphere = () => {
-        // const panelHue = TimeOfDayColor(0.8);
-        const particles = SphericalCloud(2000, 300, 0x0099ff);
-        this.scene.add(particles);
-    };
-
     loadTexture = () => {
         this.sceneTargets = [];
         this.sceneObjs = [];
 
         let i = 0;
         let vertices = null;
-        const scale_factor = 75;
 
-        const rotate_x = (x,y,z, theta=-Math.PI/2) => {
-            return x
-        };
+        // Affine transportation of point cloud after loading.
+        const postLoadTransform = (x, y, z, scale_factor = 75, theta = -Math.PI/2) => {
 
-        const rotate_y = (x,y,z, theta=-Math.PI/2) => {
-            return y*Math.cos(theta) - z*Math.sin(theta);
-        };
+            // Manually determined re-scaling and centering step
+            const x_prime = x * scale_factor;
+            const y_prime = y * scale_factor;
+            const z_prime = (z * scale_factor) - 313*scale_factor;
 
-        const rotate_z = (x,y,z, theta=-Math.PI/2) => {
-            return y* Math.sin(theta) + z*Math.cos(theta);
+            // Rotations Theta radians about the X access
+            const rotate_x = (x,y,z, theta) => {
+                return x
+            };
+
+            const rotate_y = (x,y,z, theta) => {
+                return y*Math.cos(theta) - z*Math.sin(theta);
+            };
+
+            const rotate_z = (x,y,z, theta) => {
+                return y* Math.sin(theta) + z*Math.cos(theta);
+            };
+
+            return {
+                x:  rotate_x(x_prime,y_prime,z_prime,theta),
+                y:  rotate_y(x_prime,y_prime,z_prime,theta),
+                z:  rotate_z(x_prime,y_prime,z_prime,theta),
+            };
+
         };
 
         loadPointCloud(BGDRCFile, (nPoints) => {
             vertices = new Float32Array(nPoints * 3);
         },
         (x, y, z) => {
-            const theta = -Math.PI/2;
-            const x_prime = x * scale_factor;
-            const y_prime = y * scale_factor;
-            const z_prime = (z * scale_factor) - 313*scale_factor;
 
-            vertices[i] = rotate_x(x_prime, y_prime, z_prime, theta);
-            vertices[i+1] = rotate_y(x_prime, y_prime, z_prime, theta);
-            vertices[i+2] = rotate_z(x_prime, y_prime, z_prime, theta);
+            let transformed = postLoadTransform(x,y,z);
+
+            vertices[i] = transformed.x;
+            vertices[i+1] = transformed.y;
+            vertices[i+2] = transformed.z;
+
             i += 3;
         }).then(() => {
 
