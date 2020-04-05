@@ -34,7 +34,8 @@ def main() -> None:
 
             buffer1.append(RowStruct.pack(x, y, z, rgb565(r, g, b)))
 
-    buffer1.sort()
+    # Sort based on the second dimension
+    buffer1.sort(key=lambda x: x[2:])
 
     for row in buffer1:
         x, y, z, rgb = RowStruct.unpack(row)
