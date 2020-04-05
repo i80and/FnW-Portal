@@ -16,7 +16,7 @@ import { TimeOfDayColor } from './Effects/TimeOfDayColor';
 import { loadPointCloud } from '../Loaders/SKNKPNTCLoader';
 
 import FnWTable from '../config/endpoints_list.json'
-import BGDRCFile from '../../styles/assets/foo.bin';
+import PointCloudPath from '../../styles/assets/choshi-otaki-falls.bin';
 
 const style = {
     height: '100vh',
@@ -124,7 +124,7 @@ export default class LightPanel extends Component {
 
         };
 
-        loadPointCloud(BGDRCFile, (nPoints) => {
+        loadPointCloud(PointCloudPath, (nPoints) => {
             vertices = new Float32Array(nPoints * 3);
         },
         (x, y, z) => {
