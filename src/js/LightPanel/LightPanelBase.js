@@ -147,6 +147,24 @@ export default class LightPanel extends Component {
                 depthWrite: false,
                 size: 0.5});
 
+            // Start each vertex at a roughly "random" position, and tween into the final position.
+            material.onBeforeCompile = (shader) => {
+                shader.uniforms.progress = { value: 0.0 };
+                shader.vertexShader = `uniform float progress;` + shader.vertexShader;
+                const token = `#include <begin_vertex>`;
+                const customTransform = `
+                    vec3 seed = vec3(12.9898, -78.233, 43.53429);
+
+                    vec3 startPosition = vec3(
+                        fract(sin(dot(seed.x, position.x))) * position.x,
+                        fract(sin(dot(seed.y, position.y))) * position.y,
+                        fract(sin(dot(seed.z, position.z))) * position.z);
+                    vec3 transformed = mix(startPosition, position, progress);
+                `;
+                shader.vertexShader = shader.vertexShader.replace(token, customTransform);
+                this.pointsShader = shader;
+            };
+
             const points = new THREE.Points( geometry, material );
 
             // const starting_geometry = new THREE.BufferGeometry();
@@ -288,6 +306,7 @@ export default class LightPanel extends Component {
         this.composer.addPass(blendPass);
 
         this.clock = new THREE.Clock(true);
+        this.particleClock = new THREE.Clock(true);
 
     };
 
@@ -302,6 +321,11 @@ export default class LightPanel extends Component {
     };
 
     renderEffects = () => {
+        if(this.pointsShader && this.pointsShader.uniforms.progress.value < 1.0) {
+            // Fly-in over 3 seconds
+            this.pointsShader.uniforms.progress.value += this.particleClock.getDelta() / 3.0;
+        }
+
         this.renderer.render( this.scene, this.camera );
         TWEEN.default.update();
 
