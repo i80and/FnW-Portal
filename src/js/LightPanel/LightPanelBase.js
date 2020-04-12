@@ -323,7 +323,7 @@ export default class LightPanel extends Component {
     renderEffects = () => {
         if(this.pointsShader && this.pointsShader.uniforms.progress.value < 1.0) {
             // Fly-in over 3 seconds
-            this.pointsShader.uniforms.progress.value += this.particleClock.getDelta() / 3.0;
+            this.pointsShader.uniforms.progress.value = Math.min(this.particleClock.getElapsedTime() / 3.0, 1.0);
         }
 
         this.renderer.render( this.scene, this.camera );
